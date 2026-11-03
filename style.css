@@ -21,3 +21,17 @@
 .feature-art .rings{display:flex;align-items:center;justify-content:center}
 .feature-art .rings .ring,.feature-art .rings strong{display:none}
 .feature-logo{display:block;width:55%;max-width:270px;height:auto;object-fit:contain;filter:drop-shadow(0 0 26px rgba(217,183,121,.18))}
+
+/* Instagram — full editorial fold */
+.instagram-fold{position:relative;min-height:92vh;background:#101418;color:#F6F0E6;padding:42px 5% 35px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;isolation:isolate}
+.instagram-fold:before{content:"";position:absolute;width:65vw;height:65vw;max-width:900px;max-height:900px;border:1px solid rgba(217,183,121,.15);border-radius:50%;right:-24vw;top:-15vw;pointer-events:none;z-index:-1}
+.instagram-fold:after{content:"";position:absolute;width:32vw;height:32vw;min-width:240px;min-height:240px;border-radius:50%;right:-6vw;top:20%;background:radial-gradient(circle,rgba(217,183,121,.14),transparent 68%);pointer-events:none;z-index:-1}
+.instagram-head,.instagram-footer{display:flex;justify-content:space-between;gap:24px;font-size:10px;letter-spacing:.18em;font-weight:700}
+.instagram-head{color:#D9B779}.instagram-footer{color:#b6afa4;border-top:1px solid rgba(246,240,230,.2);padding-top:22px}
+.instagram-body{max-width:1120px;margin:75px 0 90px}.instagram-eyebrow{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.2em;color:#D9B779;font-weight:700}
+.instagram-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#D9B779;box-shadow:0 0 24px #D9B779}
+.instagram-body h2{font:700 clamp(64px,10vw,154px)/.98 Manrope,sans-serif;letter-spacing:-.085em;margin:35px 0 28px}.instagram-body h2 em{font-weight:500;color:#D9B779}
+.instagram-body p{font-size:clamp(16px,1.5vw,21px);line-height:1.6;max-width:520px;color:#d7d0c7}
+.instagram-action{display:inline-flex;align-items:center;gap:55px;margin-top:38px;padding:21px 26px;border:1px solid #D9B779;border-radius:2px;color:#F6F0E6;font-size:12px;letter-spacing:.13em;font-weight:700;transition:background .2s,color .2s}
+.instagram-action span:last-child{font-size:28px;color:#D9B779}.instagram-action:hover{background:#D9B779;color:#101418}.instagram-action:hover span:last-child{color:#101418}
+@media(max-width:600px){.instagram-fold{min-height:80vh;padding:28px 6%}.instagram-head span:last-child,.instagram-footer span:last-child{display:none}.instagram-body{margin:70px 0}.instagram-body h2{font-size:clamp(56px,13vw,85px)}.instagram-action{gap:20px;font-size:10px;padding:18px}.instagram-footer{font-size:9px}}
