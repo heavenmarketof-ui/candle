@@ -12,3 +12,7 @@
 .brand span{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:.21em;font-size:25px}
 .brand small{font-family:'DM Sans',sans-serif;font-size:7px;font-weight:600;letter-spacing:.24em;color:#D9B779}
 @media(max-width:600px){.brand img{width:37px;height:40px}.brand span{font-size:21px}.brand small{font-size:6px}}
+
+/* Official brand lockup */
+.brand-logo{display:block;width:auto;height:64px;max-width:240px;object-fit:contain}
+@media(max-width:600px){.brand-logo{height:52px;max-width:190px}}
