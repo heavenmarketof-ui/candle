@@ -5,3 +5,10 @@
 .hero-bottom{min-height:190px}
 @media(max-width:900px){.hero h1{font-size:clamp(66px,11.2vw,110px)}}
 @media(max-width:600px){.hero h1{font-size:clamp(54px,13.5vw,82px);line-height:1.03}.hero-title{padding-top:24px}}
+
+/* Official Candle brand system */
+:root{--dark:#101418;--cream:#F6F0E6;--gold:#D9B779;--ink:#101418}
+.brand img{width:43px;height:47px;object-fit:contain}
+.brand span{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:.21em;font-size:25px}
+.brand small{font-family:'DM Sans',sans-serif;font-size:7px;font-weight:600;letter-spacing:.24em;color:#D9B779}
+@media(max-width:600px){.brand img{width:37px;height:40px}.brand span{font-size:21px}.brand small{font-size:6px}}
