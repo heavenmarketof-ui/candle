@@ -16,3 +16,8 @@
 /* Official brand lockup */
 .brand-logo{display:block;width:auto;height:64px;max-width:240px;object-fit:contain}
 @media(max-width:600px){.brand-logo{height:52px;max-width:190px}}
+
+/* Official Candle emblem in marketing + sales feature */
+.feature-art .rings{display:flex;align-items:center;justify-content:center}
+.feature-art .rings .ring,.feature-art .rings strong{display:none}
+.feature-logo{display:block;width:55%;max-width:270px;height:auto;object-fit:contain;filter:drop-shadow(0 0 26px rgba(217,183,121,.18))}
