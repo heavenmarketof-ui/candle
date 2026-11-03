@@ -11,3 +11,6 @@ Conectar GitHub > heavenmarketof-ui/candle; Framework: None; Build command: vazi
 3. Revisar dados legais e privacidade antes de adicionar analytics ou formulários.
 
 Não há depoimentos ou resultados fictícios.
+
+## Publicação
+Integração Cloudflare Pages reconectada em 2026-11-03. Atualização documental para disparar novo deploy da branch main com o logo oficial e ajustes de tipografia.
