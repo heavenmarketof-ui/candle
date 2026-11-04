@@ -1,0 +1,15 @@
+const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});
+export async function onRequestPost({request,env}){if(!env.CRM_WEBHOOK_URL||!env.CRM_WEBHOOK_TOKEN||!env.RESEND_API_KEY||!env.LEAD_NOTIFICATION_EMAIL||!env.LEAD_FROM_EMAIL)return json({error:'Integração comercial ainda não configurada'},503);
+if(!/^https:\/\//.test(env.CRM_WEBHOOK_URL))return json({error:'Configuração de CRM inválida'},503);
+const length=Number(request.headers.get('content-length')||0);if(length>12000)return json({error:'Dados excedem limite'},413);
+let d;try{d=await request.json()}catch{return json({error:'JSON inválido'},400)}
+const allowed=['consultoria-de-marketing','gestao-de-trafego-pago','gestao-de-redes-sociais','estrategia-de-conteudo','consultoria-comercial','criacao-de-sites'];
+const clean=(v,max)=>typeof v==='string'?v.trim().slice(0,max):'';
+const lead={name:clean(d.name,120),company:clean(d.company,150),phone:clean(d.phone,25),challenge:clean(d.challenge,1500),service:clean(d.service,80),page:clean(d.page,200),utm_source:clean(d.utm_source,120),utm_medium:clean(d.utm_medium,120),utm_campaign:clean(d.utm_campaign,120),gclid:clean(d.gclid,200),received_at:new Date().toISOString()};
+if(d.website)return json({ok:true});
+if(!d.consent||!lead.name||!lead.company||!/^[+()\d\s-]{10,25}$/.test(lead.phone)||!allowed.includes(lead.service))return json({error:'Dados obrigatórios inválidos'},400);
+if(env.TURNSTILE_SECRET_KEY){const token=clean(d.turnstileToken,3000);if(!token)return json({error:'Validação anti-spam necessária'},400);const verify=await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',{method:'POST',body:new URLSearchParams({secret:env.TURNSTILE_SECRET_KEY,response:token})});const result=await verify.json();if(!result.success)return json({error:'Validação anti-spam falhou'},400)}
+try{const crm=await fetch(env.CRM_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+env.CRM_WEBHOOK_TOKEN},body:JSON.stringify({source:'candle-website',...lead})});if(!crm.ok)return json({error:'Não foi possível registrar no CRM'},502);
+const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const html='<h2>Novo lead — Candle</h2>'+Object.entries(lead).map(([k,v])=>'<p><strong>'+escape(k)+':</strong> '+escape(v)+'</p>').join('');
+const mail=await fetch('https://api.resend.com/emails',{method:'POST',headers:{'Authorization':'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({from:env.LEAD_FROM_EMAIL,to:[env.LEAD_NOTIFICATION_EMAIL],subject:'Novo lead Candle — '+lead.service,html})});if(!mail.ok){console.error('Email notification failed after CRM success',mail.status);return json({ok:true,warning:'Lead registrado; notificação por e-mail pendente'})}return json({ok:true})}catch(e){console.error('Lead integration failed',String(e));return json({error:'Falha temporária no processamento'},502)}}
