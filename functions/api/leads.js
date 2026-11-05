@@ -1,11 +1,11 @@
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});
 export async function onRequestPost({request,env}){if(!env.DB||!env.RESEND_API_KEY||!env.LEAD_NOTIFICATION_EMAIL||!env.LEAD_FROM_EMAIL)return json({error:'Integração comercial ainda não configurada'},503);
 
-const length=Number(request.headers.get('content-length')||0);if(length>12000)return json({error:'Dados excedem limite'},413);
+const length=Number(request.headers.get('content-length')||0);if(length>20000)return json({error:'Dados excedem limite'},413);
 let d;try{d=await request.json()}catch{return json({error:'JSON inválido'},400)}
 const allowed=['consultoria-de-marketing','gestao-de-trafego-pago','gestao-de-redes-sociais','estrategia-de-conteudo','consultoria-comercial','criacao-de-sites'];
 const clean=(v,max)=>typeof v==='string'?v.trim().slice(0,max):'';
-const lead={name:clean(d.name,120),company:clean(d.company,150),phone:clean(d.phone,25),challenge:clean(d.challenge,1500),service:clean(d.service,80),page:clean(d.page,200),utm_source:clean(d.utm_source,120),utm_medium:clean(d.utm_medium,120),utm_campaign:clean(d.utm_campaign,120),gclid:clean(d.gclid,200),received_at:new Date().toISOString()};
+const lead={name:clean(d.name,120),company:clean(d.company,150),phone:clean(d.phone,25),challenge:clean(d.challenge,12000),service:clean(d.service,80),page:clean(d.page,200),utm_source:clean(d.utm_source,120),utm_medium:clean(d.utm_medium,120),utm_campaign:clean(d.utm_campaign,120),gclid:clean(d.gclid,200),received_at:new Date().toISOString()};
 if(d.website)return json({ok:true});
 if(!d.consent||!lead.name||!lead.company||!/^[+()\d\s-]{10,25}$/.test(lead.phone)||!allowed.includes(lead.service))return json({error:'Dados obrigatórios inválidos'},400);
 if(env.TURNSTILE_SECRET_KEY){const token=clean(d.turnstileToken,3000);if(!token)return json({error:'Validação anti-spam necessária'},400);const verify=await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',{method:'POST',body:new URLSearchParams({secret:env.TURNSTILE_SECRET_KEY,response:token})});const result=await verify.json();if(!result.success)return json({error:'Validação anti-spam falhou'},400)}
