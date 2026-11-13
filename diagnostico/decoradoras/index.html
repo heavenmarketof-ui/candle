@@ -224,6 +224,51 @@ main {
   .lhl-gallery-grid figure:last-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
   header { flex-wrap: wrap; }
 }
+
+/* Shared horizontal bounds for the header and hero. */
+body > header,
+main > .hero {
+  width: min(1180px, calc(100% - 2 * clamp(16px, 4vw, 32px)));
+  max-width: none;
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+body > header {
+  padding-block: clamp(16px, 2vw, 24px) 12px;
+}
+
+main > .hero {
+  padding-block: clamp(24px, 4vw, 52px) clamp(36px, 5vw, 60px);
+  overflow-wrap: break-word;
+}
+
+main > .hero h1 {
+  max-width: 960px;
+  font-size: clamp(1.85rem, 5vw, 4.5rem);
+  line-height: 1.1;
+  margin-block: 12px 18px;
+}
+
+main > .hero p {
+  max-width: 65ch;
+  margin-block: 0;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+}
+
+main > .hero .micro {
+  margin-block-start: 16px;
+  font-size: .86rem;
+}
+
+@media (max-width: 760px) {
+  main > .hero .cta {
+    width: fit-content;
+    max-width: 100%;
+    display: flex;
+    text-align: center;
+  }
+}
 </style></head><body><header><a href="/"><img src="/assets/logo-candle.png" alt="Candle Marketing & Strategy"></a><a class="toplink" href="#diagnostico-form">Solicitar diagnóstico ↗</a></header><main>
 <section class="hero"><span class="eyebrow">CANDLE / MARKETING PARA DECORADORAS</span><h1>Sua decoração encanta.<br><em>Mas sua agenda está cheia?</em></h1><p>Você não precisa depender apenas de indicações, impulsionamentos aleatórios ou clientes que pedem orçamento e desaparecem. Podemos te ajudar a construir uma estratégia para <strong>atrair oportunidades, melhorar seu atendimento e fechar mais festas.</strong></p><a class="cta" href="#diagnostico-form">Quero um diagnóstico gratuito ↗</a><a class="cta outline" href="#historia-lhl">Conheça nossa história</a><p class="micro">Estratégia, tráfego pago e vendas para negócios de decoração. Sem promessas de resultados garantidos.</p></section>
 <section class="section-sales"><span class="eyebrow">VOCÊ SE IDENTIFICA?</span><h2>Você faz decorações incríveis. <em>Mas vender continua sendo um desafio?</em></h2><div class="cards"><div class="tile"><h3>Orçamentos sem resposta</h3><p>Você dedica tempo a cada proposta e o cliente simplesmente desaparece.</p></div><div class="tile"><h3>Agenda imprevisível</h3><p>Alguns fins de semana estão cheios. Outros, completamente vazios.</p></div><div class="tile"><h3>Divulgação sem direção</h3><p>Você publica, impulsiona e investe, mas não sabe exatamente o que está funcionando.</p></div></div><p>Sabemos como é porque também vivemos os desafios de vender decoração. Nossa abordagem une divulgação e processo comercial — da primeira mensagem ao contrato.</p></section>
