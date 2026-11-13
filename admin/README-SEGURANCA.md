@@ -1,31 +1,22 @@
-# Candle Sign — publicação protegida (custo zero)
+# Candle Admin — acesso com usuário e senha
 
-## Situação
-- Formulário público: `/contrato/` (publicado na branch main).
-- Painel administrativo: `/admin/contratos/` (branch feature/candle-sign-mvp, **não publicar antes da proteção**).
-- A interface administrativa é apenas demonstrativa: não há autenticação própria, banco de dados, cadastro persistente ou armazenamento de PDFs.
+## Como o novo acesso funciona
+- A página de login fica em `/admin/login/`.
+- O usuário e a senha são definidos pelo responsável no primeiro acesso; a senha nunca deve ser enviada por mensagem ou incluída no repositório.
+- A senha é armazenada no D1 como derivação PBKDF2-SHA-256 com salt aleatório; o cookie de sessão é HttpOnly, Secure e SameSite=Lax.
+- As sessões expiram em 7 dias. O botão “Sair” encerra a sessão.
+- As APIs administrativas validam a sessão no servidor. O painel não confia em uma senha ou indicador guardado no navegador.
+- O cadastro inicial só funciona enquanto a sessão do Cloudflare Access ainda está válida; depois de criado o usuário, novos cadastros são recusados.
 
-## Antes de publicar o painel
-1. Entrar na conta Cloudflare que controla `candle-f4i.pages.dev`.
-2. No Cloudflare Zero Trust, criar uma aplicação **Access > Applications > Add an application > Self-hosted** (a nomenclatura pode variar).
-3. Proteger o hostname `candle-f4i.pages.dev` e o caminho `/admin/*` com política **Allow** somente para o e-mail administrativo da Candle, usando One-time PIN (OTP) ou outro método compatível com o plano gratuito.
-4. Confirmar que a política cobre todos os arquivos e subcaminhos em `/admin/`, inclusive CSS e JavaScript. Não confiar apenas em `noindex` ou em um menu oculto.
-5. Testar em janela anônima: `/contrato/` permanece público; `/admin/contratos/` exige autenticação; e-mails não autorizados não acessam.
-6. Somente após os testes, publicar o painel na branch main. Verificar se a proteção está aplicada também a eventuais URLs de preview do Pages.
+## Ativação em duas etapas
+1. Publicar esta versão mantendo a proteção atual do Cloudflare Access.
+2. Acessar `/admin/login/` e, na primeira visita, definir usuário e senha próprios. Esta etapa ainda passa pelo código por e-mail já existente.
+3. Confirmar que o login novo abre as páginas do admin e que o botão “Sair” encerra a sessão.
+4. Depois da validação, alterar a política Cloudflare Access para não exigir OTP no caminho `/admin/*`. As APIs `/api/admin/*` continuam protegidas pela sessão do painel.
+5. Testar o login em uma janela anônima antes de considerar a troca concluída.
 
-**Atenção:** proteção do caminho por Cloudflare Access não transforma HTML estático em sistema de gestão de dados. Para dados pessoais e contratos, não armazenar em GitHub público, localStorage ou arquivos no diretório do Pages. Arquivar PDFs assinados em Drive privado, com permissões e retenção apropriadas. O formulário público encaminha dados via WhatsApp após confirmação do cliente; não registra automaticamente as respostas.
-
-## Processo de assinatura
-1. Receber cadastro público via WhatsApp.
-2. Completar e revisar juridicamente o contrato final.
-3. Assinar o PDF no https://assinador.iti.br/ e solicitar a assinatura da outra parte.
-4. Validar o PDF final no https://validar.iti.gov.br/.
-5. Arquivar o arquivo digital original em pasta privada.
-
-## Checklist de aceite
-- [ ] Política Cloudflare Access configurada pelo titular da conta.
-- [ ] Usuário não autorizado bloqueado.
-- [ ] Usuário autorizado consegue entrar.
-- [ ] Formulário público segue funcionando.
-- [ ] Nenhum dado real em GitHub, Cloudflare Pages ou frontend.
-- [ ] Modelo contratual revisado antes da assinatura.
+## Proteção e dados
+- A senha tem no mínimo 12 caracteres; tentativas por IP são limitadas no D1.
+- Não armazene dados reais de clientes em arquivos estáticos ou no GitHub.
+- O D1 usado pelo CRM contém dados pessoais e deve permanecer vinculado somente ao ambiente de produção.
+- Se o D1 não estiver vinculado, o login e as rotas administrativas falham fechados.
