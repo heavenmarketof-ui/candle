@@ -1,4 +1,4 @@
-import {ensureAuthTables,createSession,sha256,response} from '../../_lib/auth.js';
+import {ensureAuthTables,createSession,sha256} from '../../_lib/auth.js';
 const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store',...headers}});
 const originOK=request=>request.headers.get('Origin')===new URL(request.url).origin;
 const hex=s=>Array.from(s).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -16,15 +16,24 @@ export async function onRequestPost({request,env}){
   await env.DB.prepare('DELETE FROM admin_login_attempts WHERE attempted_at<?').bind(now-86400).run();
   const recent=await env.DB.prepare('SELECT COUNT(*) AS total FROM admin_login_attempts WHERE ip_hash=? AND success=0 AND attempted_at>?').bind(ip,now-3600).first();
   if((recent?.total||0)>=8)return json({error:'Muitas tentativas. Aguarde antes de tentar novamente.'},429,{'Retry-After':'3600'});
-  const account=await env.DB.prepare('SELECT username,email,salt,password_hash FROM admin_credentials WHERE id=1').first();
-  let ok=false;
-  if(account&&safeEqual(account.username.toLowerCase(),username)){
+  const configuredUsername=String(env.ADMIN_USERNAME||'').trim().toLowerCase();
+  const configuredPassword=String(env.ADMIN_PASSWORD||'');
+  const hasEnvCredentials=!!configuredUsername&&!!configuredPassword;
+  const account=hasEnvCredentials?null:await env.DB.prepare('SELECT username,email,salt,password_hash FROM admin_credentials WHERE id=1').first();
+  let ok=false,identity=null;
+  if(hasEnvCredentials){
+   const userMatch=safeEqual(username,configuredUsername),passwordMatch=safeEqual(password,configuredPassword);
+   ok=userMatch&&passwordMatch;
+   const email=(env.ADMIN_EMAILS||'').split(',').map(v=>v.trim().toLowerCase()).find(Boolean)||configuredUsername+'@admin.local';
+   identity={username:configuredUsername,email};
+  }else if(account&&safeEqual(account.username.toLowerCase(),username)){
    const salt=Uint8Array.from(account.salt.match(/.{2}/g)||[],h=>parseInt(h,16));
    ok=safeEqual(await derive(password,salt),account.password_hash);
+   identity=account;
   }else if(account){await derive(password,new Uint8Array(16))}
   await env.DB.prepare('INSERT INTO admin_login_attempts(ip_hash,attempted_at,success) VALUES(?,?,?)').bind(ip,now,ok?1:0).run();
   if(!ok)return json({error:'Usuário ou senha incorretos'},401);
-  const session=await createSession(env,account);
+  const session=await createSession(env,identity);
   return json({ok:true},200,{'Set-Cookie':session.cookie});
  }catch(e){console.error('Admin login failed',e);return json({error:'Não foi possível iniciar a sessão'},500)}
 }
