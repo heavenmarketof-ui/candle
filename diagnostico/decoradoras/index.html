@@ -178,6 +178,52 @@ main > section > p:last-child { margin-bottom: 0; }
   .wa-float { width: 48px; height: 48px; right: 10px; bottom: 10px; }
   footer { padding-bottom: 66px; }
 }
+
+/* Shared spacing for the full-width sections and their content. */
+main {
+  --section-space: clamp(36px, 5vw, 64px);
+}
+
+#historia-lhl .story {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: clamp(20px, 3vw, 40px);
+}
+
+#historia-lhl .story-photo {
+  max-width: 400px;
+  justify-self: stretch;
+}
+
+.stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.lhl-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.sales-form .panel { max-width: none; }
+.sales-form > p { max-width: 790px; }
+
+@media (min-width: 541px) and (max-width: 760px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  #historia-lhl .story { grid-template-columns: minmax(0, 1fr); }
+  #historia-lhl .story-photo { justify-self: start; max-width: 320px; }
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .lhl-gallery-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .lhl-gallery-grid figure { grid-column: span 2; }
+  .lhl-gallery-grid figure:nth-last-child(-n+2) { grid-column: span 3; aspect-ratio: 1; }
+}
+
+@media (max-width: 480px) {
+  .lhl-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lhl-gallery-grid figure,
+  .lhl-gallery-grid figure:nth-last-child(-n+2) { grid-column: auto; aspect-ratio: 3 / 4; }
+  .lhl-gallery-grid figure:last-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
+  header { flex-wrap: wrap; }
+}
 </style></head><body><header><a href="/"><img src="/assets/logo-candle.png" alt="Candle Marketing & Strategy"></a><a class="toplink" href="#diagnostico-form">Solicitar diagnóstico ↗</a></header><main>
 <section class="hero"><span class="eyebrow">CANDLE / MARKETING PARA DECORADORAS</span><h1>Sua decoração encanta.<br><em>Mas sua agenda está cheia?</em></h1><p>Você não precisa depender apenas de indicações, impulsionamentos aleatórios ou clientes que pedem orçamento e desaparecem. Podemos te ajudar a construir uma estratégia para <strong>atrair oportunidades, melhorar seu atendimento e fechar mais festas.</strong></p><a class="cta" href="#diagnostico-form">Quero um diagnóstico gratuito ↗</a><a class="cta outline" href="#historia-lhl">Conheça nossa história</a><p class="micro">Estratégia, tráfego pago e vendas para negócios de decoração. Sem promessas de resultados garantidos.</p></section>
 <section class="section-sales"><span class="eyebrow">VOCÊ SE IDENTIFICA?</span><h2>Você faz decorações incríveis. <em>Mas vender continua sendo um desafio?</em></h2><div class="cards"><div class="tile"><h3>Orçamentos sem resposta</h3><p>Você dedica tempo a cada proposta e o cliente simplesmente desaparece.</p></div><div class="tile"><h3>Agenda imprevisível</h3><p>Alguns fins de semana estão cheios. Outros, completamente vazios.</p></div><div class="tile"><h3>Divulgação sem direção</h3><p>Você publica, impulsiona e investe, mas não sabe exatamente o que está funcionando.</p></div></div><p>Sabemos como é porque também vivemos os desafios de vender decoração. Nossa abordagem une divulgação e processo comercial — da primeira mensagem ao contrato.</p></section>
